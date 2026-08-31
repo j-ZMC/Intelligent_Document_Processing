@@ -27,7 +27,7 @@ La necesidad de este tipo de programa radica en el costo operativo que las empre
 
 **Entradas**
 *• documento — archivo (PDF o Imagen)
-• campos_a_extraer — lista de texto (Ej. "total", "fecha")*
+• campos_a_extraer — lista de texto (Ej. total, fecha)*
 
 **Proceso**
 *1. Inicio
