@@ -1,11 +1,8 @@
 from openai import OpenAI
 from pathlib import Path
 import json
-
-# Obtiene la carpeta donde está guardado este archivo Python y busca la subcarpeta documents
 from pathlib import Path
 
-# Lee el archivo de AAPL que esta en varias carpetas
 file_path = (
     Path(__file__).parent
     / "company_report"
@@ -21,7 +18,6 @@ file_path = (
 with open(file_path, "r", encoding="utf-8") as file:
     texto_contexto = file.read()
 
-# Inicializa el cliente oficial apuntando a OpenAI
 client = OpenAI(
     api_key="YOUR_OPENAI_API_KEY"
     # API OLLAMA_LOCALURL="http://localhost:11434" 
@@ -88,7 +84,7 @@ Reglas:
 """
 
 response = client.chat.completions.create(
-    model="gpt-4o",  # También puedes usar "gpt-4o, Ollama, gpt-5.6-Luna, gpt-5.6-turbo, gpt-5.6-turbo-16k, gpt-5.6-turbo-32k"
+    model="gpt-4o",  # gpt-4o, Ollama, gpt-5.6-Luna, gpt-5.6-turbo, gpt-5.6-turbo-16k, gpt-5.6-turbo-32k
     response_format={"type": "json_object"},
     messages=[
         {
