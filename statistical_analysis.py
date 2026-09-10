@@ -30,7 +30,6 @@ def analizar_finanzas(datos):
     valores_efectivo = valores_de(efectivo)
     valores_obligaciones = valores_de(obligaciones)
 
-    # Equivale directamente al cálculo solicitado sobre resultado.json.
     total_deuda = sumar(*valores_deuda)
     total_efectivo = sumar(*valores_efectivo)
     total_obligaciones = sumar(*valores_obligaciones)

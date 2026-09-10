@@ -24,7 +24,7 @@ La necesidad de este tipo de programa radica en el costo operativo que las empre
 
 
 ##  Pseudocódigo:
-
+```text
 **Entradas**
 *• documento — archivo (PDF o Imagen)
 • campos_a_extraer — lista de texto (Ej. total, fecha)*
@@ -51,3 +51,4 @@ La necesidad de este tipo de programa radica en el costo operativo que las empre
 **Salidas**
 *• origen — texto ("OCR_LOCAL" o "LLM_RESCATE")
 • resultado — archivo/texto (JSON, CSV o SQL)*
+```
