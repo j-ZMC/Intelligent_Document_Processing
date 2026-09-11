@@ -19,7 +19,7 @@ with open(file_path, "r", encoding="utf-8") as file:
     texto_contexto = file.read()
 
 client = OpenAI(
-    api_key="YOUR_OPENAI_API_KEY"
+    api_key="API_KEY"
     # API OLLAMA_LOCALURL="http://localhost:11434" 
 )
 
