@@ -19,7 +19,7 @@ def downloader(ticket, years, year):
         save_path = Path(temp_dir)
         dl = Downloader(
             "AnalisisFinanciero",
-            "jesuszahidmorenocalderon@gmail.com",
+            "correo_electronico",
             save_path,
         )
 
