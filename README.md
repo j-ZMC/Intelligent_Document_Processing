@@ -47,8 +47,13 @@ Proceso
 6. Formateo y Salida
 6.1. CONVERTIR resultado al formato final (JSON, CSV o SQL).
 6.2. MOSTRAR origen y resultado.
-7. Fin*
-**Salidas**
+7. Fin
+Salidas
 *• origen — texto ("OCR_LOCAL" o "LLM_RESCATE")
+<<<<<<< HEAD
 • resultado — archivo/texto (JSON, CSV o SQL)
 ```
+=======
+• resultado — archivo/texto (JSON, CSV o SQL)*
+```
+>>>>>>> 6eb50ff8f9e5bbd027c84873cb5cc1d4788a8ef0
