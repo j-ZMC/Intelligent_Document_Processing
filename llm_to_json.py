@@ -1,7 +1,9 @@
+# Libreria Standard para uso de moldelos de LLM  (https://developers.openai.com/api/reference/python)
 from openai import OpenAI
+# Libreria standard Python para organizar archivos (https://docs.python.org/es/3/library/pathlib.html)
 from pathlib import Path
+# Libreria stanndard para trabajar con JSONS, ya sea crearlos o modificarlos (https://docs.python.org/es/3/library/json.html)
 import json
-from pathlib import Path
 
 file_path = (
     Path(__file__).parent

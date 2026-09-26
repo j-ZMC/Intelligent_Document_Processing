@@ -1,5 +1,8 @@
+# Libreria stanndard para trabajar con JSONS, ya sea crearlos o modificarlos (https://docs.python.org/es/3/library/json.html)
 import json
+# Libreria standard Python para organizar archivos (https://docs.python.org/es/3/library/pathlib.html)
 from pathlib import Path
+# Libreria propia
 from math_operations import dividir, multiplicar, porcentaje, restar, sumar
 
 

@@ -25,12 +25,12 @@ La necesidad de este tipo de programa radica en el costo operativo que las empre
 
 ##  Pseudocódigo:
 ```text
-**Entradas**
-*• documento — archivo (PDF o Imagen)
-• campos_a_extraer — lista de texto (Ej. total, fecha)*
+Entradas
+• documento — archivo (PDF o Imagen)
+• campos_a_extraer — lista de texto (Ej. total, fecha)
 
-**Proceso**
-*1. Inicio
+Proceso
+1. Inicio
 2. PEDIR documento y campos_a_extraer al usuario.
 3. Extracción Rápida (OCR Local)
 3.1. EXTRAER texto del documento con un motor de OCR local.
@@ -50,5 +50,5 @@ La necesidad de este tipo de programa radica en el costo operativo que las empre
 7. Fin*
 **Salidas**
 *• origen — texto ("OCR_LOCAL" o "LLM_RESCATE")
-• resultado — archivo/texto (JSON, CSV o SQL)*
+• resultado — archivo/texto (JSON, CSV o SQL)
 ```

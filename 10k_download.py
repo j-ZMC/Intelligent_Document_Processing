@@ -1,7 +1,12 @@
+# Libreria standard Python para organizar archivos (https://docs.python.org/es/3/library/pathlib.html)
 from pathlib import Path
+# Libreria para descargar 10-K reportes financieros (https://sec-edgar-downloader.readthedocs.io/en/latest/)
 from sec_edgar_downloader import Downloader
+# Libreria Python para convertir HTML a ASCII texto (https://pypi.org/project/html2text/)
 import html2text
+# Libreria Python para borrar y crear archivos (https://docs.python.org/3/library/tempfile.html)
 import tempfile
+# Libreria Python para saber el tiempo real (https://docs.python.org/es/3.8/library/time.html)
 import time
 
 
