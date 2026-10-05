@@ -9,12 +9,13 @@ import tempfile
 # Libreria Python para saber el tiempo real (https://docs.python.org/es/3.8/library/time.html)
 import time
 
-
+#Bucle para todos los anos que se deben de descargar
 def ticket_year(ticket, years):
     for i in range(years):
         year = int(time.localtime().tm_year) - (i+1)
         downloader(ticket, years, year)
 
+# Descarga un solo ano en particular para una empresa
 def downloader(ticket, years, year):
     report_path = Path(__file__).parent / "company_report" / f"{ticket}"
 
@@ -24,7 +25,7 @@ def downloader(ticket, years, year):
         save_path = Path(temp_dir)
         dl = Downloader(
             "AnalisisFinanciero",
-            "correo_electronico",
+            "jesusmorenocalderon10@gmail.com",
             save_path,
         )
 
@@ -63,6 +64,6 @@ def downloader(ticket, years, year):
 
         print(f"Markdown generado con exito en:\n{md_path}")
 
-
+# Pruebas
 if __name__ == "__main__":
     ticket_year("AAPL", 8) # Probar AAPL AMNZ

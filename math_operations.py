@@ -1,3 +1,4 @@
+# Solo operaciones matematicas para usarse despues
 def sumar(*valores):
     return sum(valores)
 

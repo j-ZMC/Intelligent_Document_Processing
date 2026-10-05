@@ -14,6 +14,8 @@ graficas/
 
 resultado.json
 
-# Scripts auxiliares
-html_clean_item7.py
-automatic_data.py
+.env.example
+
+company_report
+graphical_interface/__pycache__
+graficas

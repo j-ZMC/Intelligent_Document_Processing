@@ -5,23 +5,26 @@ from pathlib import Path
 # Libreria propia
 from math_operations import dividir, multiplicar, porcentaje, restar, sumar
 
-
+# Busca el ultimo json generado, ya que solo se crea uno al mismo tiempo
 ARCHIVO_RESULTADO = Path(__file__).parent / "resultado.json"
 
-
+# Cargar el ultimo json
 def cargar_resultado():
     with open(ARCHIVO_RESULTADO, encoding="utf-8") as archivo:
         return json.load(archivo)["respuesta"]
 
-
+# Saca los numeros del campo value de una lista, saltando los vacios
 def valores_de(lista):
-    return [
-        float(item["value"])
-        for item in lista
-        if isinstance(item, dict) and item.get("value") is not None
-    ]
+    numeros = []
+    for item in lista:
+        if not isinstance(item, dict):
+            continue
+        if item.get("value") is None:
+            continue
+        numeros.append(float(item["value"]))
+    return numeros
 
-
+# Funcion para obtener los datos y calcularlos para las graficas
 def analizar_finanzas(datos):
     recursos = datos["liquidity_and_capital_resources"]
 
@@ -56,32 +59,30 @@ def analizar_finanzas(datos):
         "porcentaje_deuda_sobre_efectivo": porcentaje_deuda_sobre_efectivo,
     }
 
+# Crea texto para los datos calculados
+def texto_analisis(estadisticas):
+    lineas = [
+        "ANÁLISIS DE resultado.json",
+        f"Deuda total: {estadisticas['total_deuda']:,.0f} millones de USD",
+        f"Efectivo total: {estadisticas['total_efectivo']:,.0f} millones de USD",
+        "Obligaciones contractuales: "
+        f"{estadisticas['total_obligaciones']:,.0f} millones de USD",
+        "Saldo de efectivo menos deuda: "
+        f"{estadisticas['saldo_efectivo_deuda']:,.0f} millones de USD",
+        f"Deuda promedio: {estadisticas['deuda_promedio']:,.0f} millones de USD",
+        "Deuda con incremento del 10%: "
+        f"{estadisticas['deuda_con_incremento']:,.0f} millones de USD",
+        "Deuda como porcentaje del efectivo: "
+        f"{estadisticas['porcentaje_deuda_sobre_efectivo']:.2f}%",
+    ]
+    return "\n".join(lineas)
 
+# Es la funcion principal para ejecutar la prueba
 def main():
     datos = cargar_resultado()
     estadisticas = analizar_finanzas(datos)
+    print(texto_analisis(estadisticas))
 
-    print("ANÁLISIS DE resultado.json")
-    print(f"Deuda total: {estadisticas['total_deuda']:,.0f} millones de USD")
-    print(f"Efectivo total: {estadisticas['total_efectivo']:,.0f} millones de USD")
-    print(
-        "Obligaciones contractuales: "
-        f"{estadisticas['total_obligaciones']:,.0f} millones de USD"
-    )
-    print(
-        "Saldo de efectivo menos deuda: "
-        f"{estadisticas['saldo_efectivo_deuda']:,.0f} millones de USD"
-    )
-    print(f"Deuda promedio: {estadisticas['deuda_promedio']:,.0f} millones de USD")
-    print(
-        "Deuda con incremento del 10%: "
-        f"{estadisticas['deuda_con_incremento']:,.0f} millones de USD"
-    )
-    print(
-        "Deuda como porcentaje del efectivo: "
-        f"{estadisticas['porcentaje_deuda_sobre_efectivo']:.2f}%"
-    )
-
-
+# Ejecuta la prueba
 if __name__ == "__main__":
     main()

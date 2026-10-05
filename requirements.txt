@@ -1,0 +1,9 @@
+beautifulsoup4
+customtkinter
+html2text
+lxml
+matplotlib
+openai
+pillow
+python-dotenv
+sec-edgar-downloader
