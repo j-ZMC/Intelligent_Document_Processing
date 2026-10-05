@@ -54,6 +54,8 @@ Salidas
 • resultado — archivo/texto (JSON, CSV o SQL)
 ```
 =======
-• resultado — archivo/texto (JSON, CSV o SQL)*
+• Como ejecutar el programa*
 ```
->>>>>>> 6eb50ff8f9e5bbd027c84873cb5cc1d4788a8ef0
+```
+Descarga el repositorio, descarga las librerias de requiments.txt y ejecuta main.py
+```
