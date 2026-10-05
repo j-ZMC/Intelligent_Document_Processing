@@ -53,8 +53,8 @@ Salidas
 <<<<<<< HEAD
 • resultado — archivo/texto (JSON, CSV o SQL)
 ```
+```
 Como ejecutar el programa
-```
-```
-Descarga el repositorio, descarga las librerias de requiments.txt y ejecuta main.py
+
+Descarga el repositorio, descarga las librerias de requirements.txt y ejecuta main.py
 ```
