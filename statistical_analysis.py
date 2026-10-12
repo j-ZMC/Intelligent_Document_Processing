@@ -16,12 +16,19 @@ def cargar_resultado():
 # Saca los numeros del campo value de una lista, saltando los vacios
 def valores_de(lista):
     numeros = []
-    for item in lista:
-        if not isinstance(item, dict):
+    k = 0
+    while k < len(lista):
+        item = lista[k]
+        try:
+            dato = item.get("value")
+        except AttributeError:
+            k += 1
             continue
-        if item.get("value") is None:
+        if dato is None:
+            k += 1
             continue
-        numeros.append(float(item["value"]))
+        numeros.append(float(dato))
+        k += 1
     return numeros
 
 # Funcion para obtener los datos y calcularlos para las graficas
@@ -77,6 +84,53 @@ def texto_analisis(estadisticas):
     ]
     return "\n".join(lineas)
 
+# Lo mismo que analizar_finanzas pero con whiles.
+def analizar_values(datos):
+    LIST_VALUES = list(datos.keys())
+    i = 0
+    recursos = {}
+    while i < len(LIST_VALUES):
+        if LIST_VALUES[i] == "liquidity_and_capital_resources":
+            recursos = datos[LIST_VALUES[i]]
+        i += 1
+    VALUES = list(recursos.keys())
+    j = 0
+    deudas = []
+    efectivo = []
+    obligaciones = []
+    while j < len(VALUES):
+        if VALUES[j] == "debt_and_financing":
+            deudas = recursos[VALUES[j]]
+        elif VALUES[j] == "cash_and_equivalents":
+            efectivo = recursos[VALUES[j]]
+        elif VALUES[j] == "contractual_obligations":
+            obligaciones = recursos[VALUES[j]]
+        j += 1
+    valores_deuda = valores_de(deudas)
+    valores_efectivo = valores_de(efectivo)
+    valores_obligaciones = valores_de(obligaciones)
+    total_deuda = sumar(*valores_deuda)
+    total_efectivo = sumar(*valores_efectivo)
+    total_obligaciones = sumar(*valores_obligaciones)
+    deuda_promedio = dividir(total_deuda, len(valores_deuda)) if valores_deuda else 0
+    deuda_con_incremento = sumar(total_deuda, porcentaje(total_deuda, 10))
+    saldo_efectivo_deuda = restar(total_efectivo, total_deuda)
+    porcentaje_deuda_sobre_efectivo = (
+        dividir(multiplicar(total_deuda, 100), total_efectivo)
+        if total_efectivo
+        else 0
+    )
+    return {
+        "total_deuda": total_deuda,
+        "total_efectivo": total_efectivo,
+        "total_obligaciones": total_obligaciones,
+        "deuda_promedio": deuda_promedio,
+        "deuda_con_incremento": deuda_con_incremento,
+        "saldo_efectivo_deuda": saldo_efectivo_deuda,
+        "porcentaje_deuda_sobre_efectivo": porcentaje_deuda_sobre_efectivo,
+    }
+
+
 # Es la funcion principal para ejecutar la prueba
 def main():
     datos = cargar_resultado()
@@ -85,4 +139,6 @@ def main():
 
 # Ejecuta la prueba
 if __name__ == "__main__":
+    #datos = cargar_resultado()
+    #analizar_values(datos)
     main()

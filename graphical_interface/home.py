@@ -9,25 +9,26 @@ from graphical_interface.results import pagina_resultados
 # Libreria standard para importar el descargador 10-K (empieza con numero y no admite import directo)
 import importlib
 
-
+#Busca a 10k_download para importar funciones, ya que inicia con un numero 
 modulo_descarga = importlib.import_module("10k_download")
+#Busca el parent original y luego busca la carpeta company_report
 BASE = Path(__file__).resolve().parent.parent / "company_report"
 
-
+#Funcion para funciones que ejecuta funciones en segundo plano de forma imediata y se usa para no congelar la interfaz grafica
 def en_fondo(tarea):
     threading.Thread(target=tarea, daemon=True).start()
 
-
+# Funcion para buscar y ordenar los archivos para graficarlos despues y regresar los tickers
 def obtener_tickers():
     tickers = sorted(p.name.upper() for p in BASE.iterdir() if p.is_dir()) if BASE.is_dir() else []
     return tickers or ["Sin descargas"]
 
-
+# Funcion para buscar y ordenar los anos de los archivos a traves de patrones
 def obtener_anos(ticker):
     anos = sorted(a.stem.rsplit("_", 1)[-1] for a in (BASE / ticker).glob(f"{ticker}_*.md") if a.stem.rsplit("_", 1)[-1].isdigit())
     return anos or ["Sin años"]
 
-
+# Checa cosas de anos y ticker, si estan desactiva el boton para descargar y manda un mensaje
 def descargar(ticket, anos, mensaje, boton):
     ticket = ticket.strip().upper()
     if ticket == "":
@@ -39,6 +40,8 @@ def descargar(ticket, anos, mensaje, boton):
     boton.configure(state="disabled")
     mensaje.configure(text=f"Descargando {ticket} con {anos} año(s)...")
 
+
+# Captura ticket, anos, mensaje, boton para la funcion anterior
     def trabajo():
         try:
             modulo_descarga.ticket_year(ticket, int(anos))
@@ -48,9 +51,10 @@ def descargar(ticket, anos, mensaje, boton):
             mensaje.after(0, lambda detalle=detalle: mensaje.configure(text=f"Error al descargar: {detalle}"))
         mensaje.after(0, lambda: boton.configure(state="normal"))
 
+# Ejecutas la funcion trabajo como target en segundo plano
     en_fondo(trabajo)
 
-
+# Obtiene si hay ticker y ano en la seccion de descarga y si es asi cambia de ventana
 def graficar(root, current_frame, menu_ticker, menu_ano, mensaje):
     ticker = menu_ticker.get()
     ano = menu_ano.get()
@@ -59,19 +63,19 @@ def graficar(root, current_frame, menu_ticker, menu_ano, mensaje):
         return
     pagina_resultados(root, current_frame, ticker, ano, pagina_principal)
 
-
+# Mantiene las opciones configuradas para los tickers y sus anos
 def cambiar_anos(opcion, menu_ano):
     menu_ano.configure(values=obtener_anos(opcion))
     menu_ano.set(obtener_anos(opcion)[0])
 
-
+# Actualiza los tickers y los valores de anos
 def actualizar_lista(menu_ticker, menu_ano, mensaje):
     menu_ticker.configure(values=obtener_tickers())
     menu_ticker.set(obtener_tickers()[0])
     cambiar_anos(menu_ticker.get(), menu_ano)
     mensaje.configure(text="Lista actualizada.")
 
-
+# Configura la ventana de ctkinter
 def pagina_principal(root, current_frame):
     current_frame.destroy()
     new_frame = ctk.CTkFrame(master=root)

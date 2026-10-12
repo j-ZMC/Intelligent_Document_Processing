@@ -6,7 +6,7 @@ from pathlib import Path
 import json
 # Libreria standard para para acceder al sistema operativo: https://docs.python.org/3/library/os.html
 import os
-
+# Libreria para poder revisar la API KEY de .env, pls no me roben. Mi vida esta en sus manos
 from dotenv import load_dotenv
 
 load_dotenv()

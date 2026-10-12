@@ -13,9 +13,10 @@ from html_clean_item7 import encontrar_html_descargado, extraer_item7_limpio
 # Libreria local para consultar al LLM (llm_to_json.py)
 from llm_to_json import procesar_archivo_item7
 # Libreria local para el analisis estadistico (statistical_analysis.py)
-from statistical_analysis import analizar_finanzas, cargar_resultado, texto_analisis
+from statistical_analysis import analizar_finanzas, cargar_resultado, texto_analisis, analizar_values
 
 
+# Crea la pagina y configura la visualizacion de la ventana
 def pagina_resultados(root, current_frame, ticker, ano, volver):
     current_frame.destroy()
     new_frame = ctk.CTkFrame(root)
@@ -42,6 +43,7 @@ def pagina_resultados(root, current_frame, ticker, ano, volver):
         estado.configure(text=texto)
         boton_volver.configure(state="normal")
 
+    # Busca los pngs generados en la carpeta de graficas y las ordena en la ventana creada en un widget que es scrollable
     def mostrar_graficas(carpeta):
         for ruta in sorted(Path(carpeta).glob("*.png")):
             ctk.CTkLabel(contenedor, text=ruta.stem.replace("_", " ").capitalize(),
@@ -66,6 +68,7 @@ def pagina_resultados(root, current_frame, ticker, ano, volver):
     def terminar_error(detalle):
         new_frame.after(0, lambda: avisar(f"Error al graficar: {detalle}"))
 
+
     def trabajo():
         try:
             html_file = encontrar_html_descargado(ticker, ano)
@@ -74,11 +77,12 @@ def pagina_resultados(root, current_frame, ticker, ano, volver):
                 raise ValueError("No se encontró el Item 7 en ese reporte.")
             (html_file.parent / "item_7_clean.txt").write_text(item7, encoding="utf-8")
             procesar_archivo_item7(html_file.parent / "item_7_clean.txt")
-            texto = texto_analisis(analizar_finanzas(cargar_resultado()))
+            texto = texto_analisis(analizar_values(cargar_resultado()))
             carpeta = graficar_resultado()
         except Exception as error:
             terminar_error(str(error))
         else:
             new_frame.after(0, lambda: terminar_ok(carpeta, texto))
 
+    #Mandar a segunfo plano el procesado.
     threading.Thread(target=trabajo, daemon=True).start()
