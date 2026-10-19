@@ -3,6 +3,9 @@ customtkinter
 html2text
 lxml
 matplotlib
+plotly
+kaleido
+pandas
 openai
 pillow
 python-dotenv

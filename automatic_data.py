@@ -4,10 +4,8 @@ import json
 import re
 # Libreria standard Python para organizar archivos (https://docs.python.org/es/3/library/pathlib.html)
 from pathlib import Path
-# Libreria para graficar (https://matplotlib.org/)
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
+# Libreria para graficar (https://plotly.com/python/)
+import plotly.express as px
 
 
 # Carpeta base del proyecto
@@ -44,6 +42,36 @@ def valor(item):
     return None
 
 
+# Agrega el periodo a la etiqueta para no juntar distintos valores en la misma barra
+def etiqueta_con_periodo(item, base):
+    periodo = item.get("period")
+    if periodo is None:
+        return base
+    return f"{base} ({periodo})"
+
+
+# Saca uno o varios pares (etiqueta, numero) de cada item
+def extraer_pares(lista):
+    pares = []
+    for item in lista:
+        if not isinstance(item, dict):
+            continue
+        base = etiqueta(item)
+        numero = valor(item)
+        if numero is not None:
+            pares.append((etiqueta_con_periodo(item, base), numero))
+            continue
+        for clave, dato in item.items():
+            if clave in ("name", "description", "label", "unit", "currency", "period", "source_excerpt"):
+                continue
+            try:
+                numero = float(dato)
+            except (TypeError, ValueError):
+                continue
+            pares.append((etiqueta_con_periodo(item, f"{base} {clave}"), numero))
+    return pares
+
+
 # Crea una grafica de barras y la guarda como PNG
 def crear_grafica(nombre, datos):
     etiquetas = []
@@ -51,30 +79,47 @@ def crear_grafica(nombre, datos):
     for par in datos:
         etiquetas.append(par[0])
         valores.append(par[1])
-    ancho = len(etiquetas) * 1.25
-    if ancho < 9:
-        ancho = 9
-    plt.figure(figsize=(ancho, 6))
-    barras = plt.bar(etiquetas, valores, color="#1685e0")
+    ancho = len(etiquetas) * 200
+    if ancho < 900:
+        ancho = 900
+    if ancho > 2400:
+        ancho = 2400
+    textos = ["{:,.0f}".format(numero) for numero in valores]
     titulo = nombre.replace("_", " ")
     titulo = titulo.capitalize()
-    plt.title(titulo)
-    plt.ylabel("Valor (millones de USD)")
-    plt.xticks(rotation=35)
-    plt.grid(axis="y", alpha=0.25)
-    indice = 0
-    for barra in barras:
-        numero = valores[indice]
-        x = barra.get_x() + barra.get_width() / 2
-        texto = "{:,.0f}".format(numero)
-        plt.text(x, numero, texto, ha="center", va="bottom")
-        indice = indice + 1
-    plt.tight_layout()
+    maximo = max(valores)
+    minimo = min(valores)
+    if minimo < 0:
+        limite_superior = maximo * 1.2 if maximo > 0 else maximo * 0.8
+        limite_inferior = minimo * 1.2
+    else:
+        limite_superior = maximo * 1.2
+        limite_inferior = 0
+    figura = px.bar(
+        x=etiquetas,
+        y=valores,
+        text=textos,
+        color_discrete_sequence=["#1685e0"],
+    )
+    figura.update_traces(textposition="outside", cliponaxis=False)
+    figura.update_layout(
+        title=titulo,
+        yaxis_title="Valor (millones de USD)",
+        width=ancho,
+        height=700,
+        bargap=0.35,
+        xaxis_tickangle=-25,
+        xaxis_tickfont=dict(size=11),
+        xaxis_automargin=True,
+        yaxis_range=[limite_inferior, limite_superior],
+        yaxis_griddash="dot",
+        yaxis_gridcolor="rgba(0, 0, 0, 0.25)",
+        margin=dict(l=60, r=30, t=100, b=220),
+    )
     # Cambia todo lo que no sea letra, numero o _ por un _ (https://docs.python.org/es/3/library/re.html#re.sub)
     nombre_archivo = re.sub(r"[^\w]+", "_", nombre)
     ruta = GRAFICAS / (nombre_archivo + ".png")
-    plt.savefig(ruta, dpi=100)
-    plt.close()
+    figura.write_image(str(ruta))
 
 
 # Grafica las listas del json que tengan numeros y regresa la carpeta
@@ -94,15 +139,7 @@ def graficar_resultado():
     i = 0
     for lista in listas:
         nombre = nombres[i]
-        pares = []
-        for item in lista:
-            if not isinstance(item, dict):
-                continue
-            numero = valor(item)
-            if numero is None:
-                continue
-            nombre_dato = etiqueta(item)
-            pares.append((nombre_dato, numero))
+        pares = extraer_pares(lista)
         if len(pares) > 0:
             crear_grafica(nombre, pares)
         i = i + 1
