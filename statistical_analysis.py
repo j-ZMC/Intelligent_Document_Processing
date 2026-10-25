@@ -31,6 +31,91 @@ def valores_de(lista):
         k += 1
     return numeros
 
+ETIQUETAS_FILAS = ["deuda", "efectivo", "obligaciones"]
+
+
+def construir_matriz_financiera(valores_deuda, valores_efectivo, valores_obligaciones):
+    n = len(valores_deuda)
+    if len(valores_efectivo) > n:
+        n = len(valores_efectivo)
+    if len(valores_obligaciones) > n:
+        n = len(valores_obligaciones)
+    fila_deuda = list(valores_deuda) + [0.0] * (n - len(valores_deuda))
+    fila_efectivo = list(valores_efectivo) + [0.0] * (n - len(valores_efectivo))
+    fila_obligaciones = list(valores_obligaciones) + [0.0] * (n - len(valores_obligaciones))
+    return [fila_deuda, fila_efectivo, fila_obligaciones]
+
+
+def totales_por_columna(matriz):
+    if not matriz or not matriz[0]:
+        return []
+    totales = []
+    j = 0
+    while j < len(matriz[0]):
+        totales.append(sumar(matriz[0][j], matriz[1][j], matriz[2][j]))
+        j += 1
+    return totales
+
+
+def saldos_por_columna(matriz):
+    if not matriz or not matriz[0]:
+        return []
+    saldos = []
+    j = 0
+    while j < len(matriz[0]):
+        saldos.append(restar(matriz[1][j], matriz[0][j]))
+        j += 1
+    return saldos
+
+
+def porcentajes_deuda_por_columna(matriz):
+    if not matriz or not matriz[0]:
+        return []
+    porcentajes = []
+    j = 0
+    while j < len(matriz[0]):
+        efectivo = matriz[1][j]
+        deuda = matriz[0][j]
+        if efectivo:
+            porcentajes.append(dividir(multiplicar(deuda, 100), efectivo))
+        else:
+            porcentajes.append(0)
+        j += 1
+    return porcentajes
+
+
+def estadisticas_desde_vectores(valores_deuda, valores_efectivo, valores_obligaciones):
+    matriz = construir_matriz_financiera(valores_deuda, valores_efectivo, valores_obligaciones)
+    total_deuda = sumar(*valores_deuda) if valores_deuda else 0
+    total_efectivo = sumar(*valores_efectivo) if valores_efectivo else 0
+    total_obligaciones = sumar(*valores_obligaciones) if valores_obligaciones else 0
+    deuda_promedio = dividir(total_deuda, len(valores_deuda)) if valores_deuda else 0
+    efectivo_promedio = dividir(total_efectivo, len(valores_efectivo)) if valores_efectivo else 0
+    obligaciones_promedio = dividir(total_obligaciones, len(valores_obligaciones)) if valores_obligaciones else 0
+    deuda_con_incremento = sumar(total_deuda, porcentaje(total_deuda, 10))
+    saldo_efectivo_deuda = restar(total_efectivo, total_deuda)
+    porcentaje_deuda_sobre_efectivo = (
+        dividir(multiplicar(total_deuda, 100), total_efectivo)
+        if total_efectivo
+        else 0
+    )
+    return {
+        "total_deuda": total_deuda,
+        "total_efectivo": total_efectivo,
+        "total_obligaciones": total_obligaciones,
+        "deuda_promedio": deuda_promedio,
+        "deuda_con_incremento": deuda_con_incremento,
+        "saldo_efectivo_deuda": saldo_efectivo_deuda,
+        "porcentaje_deuda_sobre_efectivo": porcentaje_deuda_sobre_efectivo,
+        "matriz": matriz,
+        "etiquetas_filas": list(ETIQUETAS_FILAS),
+        "totales_por_fila": [total_deuda, total_efectivo, total_obligaciones],
+        "totales_por_columna": totales_por_columna(matriz),
+        "promedios_por_fila": [deuda_promedio, efectivo_promedio, obligaciones_promedio],
+        "saldos_por_columna": saldos_por_columna(matriz),
+        "porcentajes_deuda_por_columna": porcentajes_deuda_por_columna(matriz),
+    }
+
 # Funcion para obtener los datos y calcularlos para las graficas
 def analizar_finanzas(datos):
     recursos = datos["liquidity_and_capital_resources"]
@@ -43,28 +128,7 @@ def analizar_finanzas(datos):
     valores_efectivo = valores_de(efectivo)
     valores_obligaciones = valores_de(obligaciones)
 
-    total_deuda = sumar(*valores_deuda)
-    total_efectivo = sumar(*valores_efectivo)
-    total_obligaciones = sumar(*valores_obligaciones)
-
-    deuda_promedio = dividir(total_deuda, len(valores_deuda)) if valores_deuda else 0
-    deuda_con_incremento = sumar(total_deuda, porcentaje(total_deuda, 10))
-    saldo_efectivo_deuda = restar(total_efectivo, total_deuda)
-    porcentaje_deuda_sobre_efectivo = (
-        dividir(multiplicar(total_deuda, 100), total_efectivo)
-        if total_efectivo
-        else 0
-    )
-
-    return {
-        "total_deuda": total_deuda,
-        "total_efectivo": total_efectivo,
-        "total_obligaciones": total_obligaciones,
-        "deuda_promedio": deuda_promedio,
-        "deuda_con_incremento": deuda_con_incremento,
-        "saldo_efectivo_deuda": saldo_efectivo_deuda,
-        "porcentaje_deuda_sobre_efectivo": porcentaje_deuda_sobre_efectivo,
-    }
+    return estadisticas_desde_vectores(valores_deuda, valores_efectivo, valores_obligaciones)
 
 # Crea texto para los datos calculados
 def texto_analisis(estadisticas):
@@ -109,26 +173,7 @@ def analizar_values(datos):
     valores_deuda = valores_de(deudas)
     valores_efectivo = valores_de(efectivo)
     valores_obligaciones = valores_de(obligaciones)
-    total_deuda = sumar(*valores_deuda)
-    total_efectivo = sumar(*valores_efectivo)
-    total_obligaciones = sumar(*valores_obligaciones)
-    deuda_promedio = dividir(total_deuda, len(valores_deuda)) if valores_deuda else 0
-    deuda_con_incremento = sumar(total_deuda, porcentaje(total_deuda, 10))
-    saldo_efectivo_deuda = restar(total_efectivo, total_deuda)
-    porcentaje_deuda_sobre_efectivo = (
-        dividir(multiplicar(total_deuda, 100), total_efectivo)
-        if total_efectivo
-        else 0
-    )
-    return {
-        "total_deuda": total_deuda,
-        "total_efectivo": total_efectivo,
-        "total_obligaciones": total_obligaciones,
-        "deuda_promedio": deuda_promedio,
-        "deuda_con_incremento": deuda_con_incremento,
-        "saldo_efectivo_deuda": saldo_efectivo_deuda,
-        "porcentaje_deuda_sobre_efectivo": porcentaje_deuda_sobre_efectivo,
-    }
+    return estadisticas_desde_vectores(valores_deuda, valores_efectivo, valores_obligaciones)
 
 
 # Es la funcion principal para ejecutar la prueba
